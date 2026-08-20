@@ -46,6 +46,78 @@
     }
   },
   {
+    "type": "control_block",
+    "named": true,
+    "fields": {
+      "condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "control_condition",
+            "named": true
+          }
+        ]
+      },
+      "keyword": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "@for",
+            "named": false
+          },
+          {
+            "type": "@foreach",
+            "named": false
+          },
+          {
+            "type": "@if",
+            "named": false
+          },
+          {
+            "type": "@switch",
+            "named": false
+          },
+          {
+            "type": "@while",
+            "named": false
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "control_block",
+          "named": true
+        },
+        {
+          "type": "control_text",
+          "named": true
+        },
+        {
+          "type": "markup_element",
+          "named": true
+        },
+        {
+          "type": "newline",
+          "named": true
+        },
+        {
+          "type": "razor_expression",
+          "named": true
+        },
+        {
+          "type": "self_closing_markup_element",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "csharp_block",
     "named": true,
     "fields": {},
@@ -132,6 +204,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "control_block",
+          "named": true
+        },
         {
           "type": "markup_element",
           "named": true
@@ -243,6 +319,10 @@
           "named": true
         },
         {
+          "type": "control_block",
+          "named": true
+        },
+        {
           "type": "directive",
           "named": true
         },
@@ -348,6 +428,18 @@
     "named": false
   },
   {
+    "type": "@for",
+    "named": false
+  },
+  {
+    "type": "@foreach",
+    "named": false
+  },
+  {
+    "type": "@if",
+    "named": false
+  },
+  {
     "type": "@inherits",
     "named": false
   },
@@ -364,11 +456,27 @@
     "named": false
   },
   {
+    "type": "@switch",
+    "named": false
+  },
+  {
     "type": "@using",
     "named": false
   },
   {
+    "type": "@while",
+    "named": false
+  },
+  {
     "type": "attribute_name",
+    "named": true
+  },
+  {
+    "type": "control_condition",
+    "named": true
+  },
+  {
+    "type": "control_text",
     "named": true
   },
   {

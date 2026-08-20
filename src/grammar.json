@@ -21,6 +21,10 @@
           },
           {
             "type": "SYMBOL",
+            "name": "control_block"
+          },
+          {
+            "type": "SYMBOL",
             "name": "self_closing_markup_element"
           },
           {
@@ -289,6 +293,117 @@
         }
       }
     },
+    "control_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "keyword",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "@if"
+              },
+              {
+                "type": "STRING",
+                "value": "@foreach"
+              },
+              {
+                "type": "STRING",
+                "value": "@for"
+              },
+              {
+                "type": "STRING",
+                "value": "@while"
+              },
+              {
+                "type": "STRING",
+                "value": "@switch"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FIELD",
+          "name": "condition",
+          "content": {
+            "type": "SYMBOL",
+            "name": "control_condition"
+          }
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "newline"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "newline"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "control_block"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "self_closing_markup_element"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "markup_element"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "razor_expression"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "control_text"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "control_condition": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": 1,
+        "content": {
+          "type": "PATTERN",
+          "value": "[^{}\\n]+"
+        }
+      }
+    },
+    "control_text": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": -1,
+        "content": {
+          "type": "PATTERN",
+          "value": "[^@<{}\\n]+"
+        }
+      }
+    },
     "markup_element": {
       "type": "SEQ",
       "members": [
@@ -308,6 +423,10 @@
               {
                 "type": "SYMBOL",
                 "name": "newline"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "control_block"
               },
               {
                 "type": "SYMBOL",

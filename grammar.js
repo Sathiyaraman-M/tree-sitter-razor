@@ -17,6 +17,7 @@ export default grammar({
       $.newline,
       $.directive,
       $.code_block,
+      $.control_block,
       $.self_closing_markup_element,
       $.markup_element,
       $.razor_expression,
@@ -64,10 +65,40 @@ export default grammar({
 
     csharp_text: _ => token(prec(-1, /[^{}]+/)),
 
+    // Razor control-flow blocks contain a C# header followed by markup.
+    // Keep the header and body delimiters out of the injected C# range; only
+    // @code blocks are injected as complete C# documents for now.
+    control_block: $ => seq(
+      field("keyword", choice(
+        "@if",
+        "@foreach",
+        "@for",
+        "@while",
+        "@switch",
+      )),
+      field("condition", $.control_condition),
+      repeat($.newline),
+      "{",
+      repeat(choice(
+        $.newline,
+        $.control_block,
+        $.self_closing_markup_element,
+        $.markup_element,
+        $.razor_expression,
+        $.control_text,
+      )),
+      "}",
+    ),
+
+    control_condition: _ => token(prec(1, /[^{}\n]+/)),
+
+    control_text: _ => token(prec(-1, /[^@<{}\n]+/)),
+
     markup_element: $ => seq(
       field("open", $.tag_open),
       repeat(choice(
         $.newline,
+        $.control_block,
         $.self_closing_markup_element,
         $.markup_element,
         $.razor_expression,
