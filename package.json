@@ -33,7 +33,8 @@
   ],
   "dependencies": {
     "node-addon-api": "^8.5.0",
-    "node-gyp-build": "^4.8.4"
+    "node-gyp-build": "^4.8.4",
+    "tree-sitter-c-sharp": "^0.23.5"
   },
   "devDependencies": {
     "prebuildify": "^6.0.1",
