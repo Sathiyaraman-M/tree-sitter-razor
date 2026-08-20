@@ -30,8 +30,9 @@ Hello @user.Name, total: @(items.Count + 1)
 (source_file
   (text)
   (razor_implicit_expression
-    name: (identifier)
-    (identifier))
+    body: (csharp_implicit_expression
+      name: (identifier)
+      (identifier)))
   (text)
   (razor_explicit_expression
     body: (csharp_expression
@@ -53,8 +54,9 @@ Razor expressions inside attribute values
         name: (attribute_name)
         value: (quoted_value
           (razor_implicit_expression
-            name: (identifier))
-          content: (quoted_value_content)))
+            body: (csharp_implicit_expression
+              name: (identifier)
+              (identifier)))))
       (attribute
         name: (attribute_name)
         value: (quoted_value
@@ -87,6 +89,128 @@ Lambda inside an explicit Razor expression
               (csharp_parenthesized_expression)
               (csharp_expression_text)
               (csharp_parenthesized_expression)))))))
+  (newline))
+
+================================================================================
+Implicit C# expressions in component parameters
+================================================================================
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup_element
+    (tag_open
+      (tag_name)
+      (attribute
+        (attribute_name)
+        (quoted_value
+          (razor_implicit_expression
+            (csharp_implicit_expression
+              (identifier)
+              (csharp_parenthesized_expression
+                (csharp_expression
+                  (csharp_expression_text)))
+              (identifier))))))
+    (newline)
+    (markup_element
+      (tag_open
+        (tag_name)
+        (attribute
+          (attribute_name)
+          (quoted_value
+            (quoted_value_content))))
+      (newline)
+      (self_closing_markup_element
+        (self_closing_tag_open
+          (tag_name)
+          (attribute
+            (attribute_name)
+            (quoted_value
+              (razor_implicit_expression
+                (csharp_implicit_expression
+                  (identifier)))))
+          (attribute
+            (attribute_name)
+            (quoted_value
+              (razor_implicit_expression
+                (csharp_implicit_expression
+                  (identifier)
+                  (csharp_parenthesized_expression
+                    (csharp_expression
+                      (csharp_expression_text)))))))))
+      (newline)
+      (self_closing_markup_element
+        (self_closing_tag_open
+          (tag_name)
+          (attribute
+            (attribute_name)
+            (quoted_value
+              (razor_implicit_expression
+                (csharp_implicit_expression
+                  (identifier)))))
+          (attribute
+            (attribute_name)
+            (quoted_value
+              (quoted_value_content)))))
+      (newline)
+      (tag_close
+        (tag_name)))
+    (newline)
+    (markup_element
+      (tag_open
+        (tag_name))
+      (newline)
+      (markup_element
+        (tag_open
+          (tag_name))
+        (text)
+        (tag_close
+          (tag_name)))
+      (newline)
+      (markup_element
+        (tag_open
+          (tag_name)
+          (attribute
+            (attribute_name)
+            (quoted_value
+              (razor_implicit_expression
+                (csharp_implicit_expression
+                  (identifier)
+                  (csharp_parenthesized_expression
+                    (csharp_expression
+                      (csharp_expression_text))))))))
+        (newline)
+        (markup_element
+          (tag_open
+            (tag_name)
+            (attribute
+              (attribute_name)
+              (quoted_value
+                (quoted_value_content))))
+          (text)
+          (tag_close
+            (tag_name)))
+        (newline)
+        (tag_close
+          (tag_name)))
+      (newline)
+      (tag_close
+        (tag_name)))
+    (newline)
+    (tag_close
+      (tag_name)))
   (newline))
 
 ================================================================================
@@ -166,8 +290,9 @@ Multiline self-closing markup inside foreach
             name: (attribute_name)
             value: (quoted_value
               (razor_implicit_expression
-                name: (identifier))
-              content: (quoted_value_content)))
+                body: (csharp_implicit_expression
+                  name: (identifier)
+                  (identifier)))))
           (newline)
           (attribute
             name: (attribute_name)

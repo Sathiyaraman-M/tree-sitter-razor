@@ -48,7 +48,9 @@ export default grammar({
       '"',
     ),
 
-    quoted_value_content: _ => token(prec(1, /[^@"\n]+/)),
+    // Keep this token low precedence so expression continuations such as
+    // `(App).Assembly` are preferred after an implicit Razor transition.
+    quoted_value_content: _ => token(prec(-1, /[^@"\n]+/)),
 
     code_block: $ => seq(
       "@code",
@@ -152,17 +154,19 @@ export default grammar({
 
     unquoted_value: _ => token(prec(1, /[^\s>"']+/)),
 
-    // An implicit Razor expression starts with an identifier and may contain
-    // a simple member-access chain. More complete C# syntax belongs to the
-    // injected C# grammar or an explicit expression.
     razor_implicit_expression: $ => seq(
       "@",
-      field("name", $.identifier),
-      repeat(seq(".", $.identifier)),
+      field("body", $.csharp_implicit_expression),
     ),
 
-    // Parenthesized expressions are kept as a distinct Razor node so editors
-    // can style the Razor transition independently from ordinary text.
+    csharp_implicit_expression: $ => seq(
+      field("name", $.identifier),
+      repeat(choice(
+        prec(2, seq(".", $.identifier)),
+        prec(2, $.csharp_parenthesized_expression),
+      )),
+    ),
+
     razor_explicit_expression: $ => seq(
       "@",
       "(",
