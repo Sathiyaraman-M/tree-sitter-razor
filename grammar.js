@@ -15,6 +15,8 @@ export default grammar({
   rules: {
     source_file: $ => repeat(choice(
       $.newline,
+      $.razor_comment,
+      $.html_comment,
       $.directive,
       $.code_block,
       $.control_block,
@@ -26,6 +28,24 @@ export default grammar({
     )),
 
     newline: _ => /\n/,
+
+    razor_comment: _ => token(seq(
+      "@*",
+      repeat(choice(
+        /[^*]/,
+        seq("*", /[^@]/),
+      )),
+      "*@",
+    )),
+
+    html_comment: _ => token(seq(
+      "<!--",
+      repeat(choice(
+        /[^-]/,
+        seq("-", /[^-]/),
+      )),
+      "-->",
+    )),
 
     directive: $ => choice(
       seq("@page", field("value", $.quoted_value)),
@@ -88,6 +108,8 @@ export default grammar({
       "{",
       repeat(choice(
         $.newline,
+        $.razor_comment,
+        $.html_comment,
         $.control_block,
         $.self_closing_markup_element,
         $.markup_element,
@@ -106,6 +128,8 @@ export default grammar({
       field("open", $.tag_open),
       repeat(choice(
         $.newline,
+        $.razor_comment,
+        $.html_comment,
         $.control_block,
         $.self_closing_markup_element,
         $.markup_element,

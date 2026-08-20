@@ -99,11 +99,19 @@
           "named": true
         },
         {
+          "type": "html_comment",
+          "named": true
+        },
+        {
           "type": "markup_element",
           "named": true
         },
         {
           "type": "newline",
+          "named": true
+        },
+        {
+          "type": "razor_comment",
           "named": true
         },
         {
@@ -277,11 +285,19 @@
           "named": true
         },
         {
+          "type": "html_comment",
+          "named": true
+        },
+        {
           "type": "markup_element",
           "named": true
         },
         {
           "type": "newline",
+          "named": true
+        },
+        {
+          "type": "razor_comment",
           "named": true
         },
         {
@@ -433,11 +449,19 @@
           "named": true
         },
         {
+          "type": "html_comment",
+          "named": true
+        },
+        {
           "type": "markup_element",
           "named": true
         },
         {
           "type": "newline",
+          "named": true
+        },
+        {
+          "type": "razor_comment",
           "named": true
         },
         {
@@ -618,6 +642,10 @@
     "named": true
   },
   {
+    "type": "html_comment",
+    "named": true
+  },
+  {
     "type": "identifier",
     "named": true
   },
@@ -627,6 +655,10 @@
   },
   {
     "type": "quoted_value_content",
+    "named": true
+  },
+  {
+    "type": "razor_comment",
     "named": true
   },
   {

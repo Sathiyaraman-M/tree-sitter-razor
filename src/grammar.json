@@ -13,6 +13,14 @@
           },
           {
             "type": "SYMBOL",
+            "name": "razor_comment"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "html_comment"
+          },
+          {
+            "type": "SYMBOL",
             "name": "directive"
           },
           {
@@ -49,6 +57,88 @@
     "newline": {
       "type": "PATTERN",
       "value": "\\n"
+    },
+    "razor_comment": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "@*"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[^*]"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "*"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[^@]"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "type": "STRING",
+            "value": "*@"
+          }
+        ]
+      }
+    },
+    "html_comment": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "<!--"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[^-]"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "-"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[^-]"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "type": "STRING",
+            "value": "-->"
+          }
+        ]
+      }
     },
     "directive": {
       "type": "CHOICE",
@@ -367,6 +457,14 @@
               },
               {
                 "type": "SYMBOL",
+                "name": "razor_comment"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "html_comment"
+              },
+              {
+                "type": "SYMBOL",
                 "name": "control_block"
               },
               {
@@ -439,6 +537,14 @@
               {
                 "type": "SYMBOL",
                 "name": "newline"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "razor_comment"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "html_comment"
               },
               {
                 "type": "SYMBOL",
