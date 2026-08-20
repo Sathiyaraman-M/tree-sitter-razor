@@ -17,6 +17,7 @@ export default grammar({
       $.newline,
       $.directive,
       $.code_block,
+      $.self_closing_markup_element,
       $.markup_element,
       $.razor_expression,
       $.text,
@@ -67,6 +68,7 @@ export default grammar({
       field("open", $.tag_open),
       repeat(choice(
         $.newline,
+        $.self_closing_markup_element,
         $.markup_element,
         $.razor_expression,
         $.text,
@@ -74,12 +76,22 @@ export default grammar({
       field("close", $.tag_close),
     ),
 
+    self_closing_markup_element: $ => seq(
+      field("open", $.self_closing_tag_open),
+    ),
+
     tag_open: $ => seq(
       "<",
       field("name", $.tag_name),
       repeat($.attribute),
-      optional("/"),
       ">",
+    ),
+
+    self_closing_tag_open: $ => seq(
+      "<",
+      field("name", $.tag_name),
+      repeat($.attribute),
+      "/>",
     ),
 
     tag_close: $ => seq(

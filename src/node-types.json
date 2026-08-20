@@ -145,6 +145,10 @@
           "named": true
         },
         {
+          "type": "self_closing_markup_element",
+          "named": true
+        },
+        {
           "type": "text",
           "named": true
         }
@@ -184,6 +188,48 @@
     }
   },
   {
+    "type": "self_closing_markup_element",
+    "named": true,
+    "fields": {
+      "open": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "self_closing_tag_open",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "self_closing_tag_open",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "tag_name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "attribute",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "source_file",
     "named": true,
     "root": true,
@@ -210,6 +256,10 @@
         },
         {
           "type": "razor_expression",
+          "named": true
+        },
+        {
+          "type": "self_closing_markup_element",
           "named": true
         },
         {
@@ -266,7 +316,7 @@
     "named": false
   },
   {
-    "type": "/",
+    "type": "/>",
     "named": false
   },
   {
