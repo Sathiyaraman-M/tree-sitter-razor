@@ -111,6 +111,10 @@
           "named": true
         },
         {
+          "type": "razor_code_block",
+          "named": true
+        },
+        {
           "type": "razor_comment",
           "named": true
         },
@@ -307,6 +311,10 @@
           "named": true
         },
         {
+          "type": "razor_code_block",
+          "named": true
+        },
+        {
           "type": "razor_comment",
           "named": true
         },
@@ -357,6 +365,22 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "razor_code_block",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "csharp_code",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -468,6 +492,10 @@
         },
         {
           "type": "newline",
+          "named": true
+        },
+        {
+          "type": "razor_code_block",
           "named": true
         },
         {

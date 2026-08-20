@@ -21,6 +21,45 @@ Self-closing markup preserves following code
   (newline))
 
 ================================================================================
+Inline Razor code block
+================================================================================
+<AuthorizeRouteView RouteData="@routeData">
+  <NotAuthorized>
+    @{
+      NavigationManager.NavigateTo("/login");
+    }
+  </NotAuthorized>
+</AuthorizeRouteView>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup_element
+    (tag_open
+      (tag_name)
+      (attribute
+        (attribute_name)
+        (quoted_value
+          (razor_implicit_expression
+            (csharp_implicit_expression
+              (identifier))))))
+    (newline)
+    (markup_element
+      (tag_open
+        (tag_name))
+      (newline)
+      (razor_code_block
+        (csharp_code
+          (csharp_text)))
+      (newline)
+      (tag_close
+        (tag_name)))
+    (newline)
+    (tag_close
+      (tag_name)))
+  (newline))
+
+================================================================================
 Razor comments
 ================================================================================
 Before @* <div>ignored</div>

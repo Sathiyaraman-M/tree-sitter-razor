@@ -19,6 +19,7 @@ export default grammar({
       $.html_comment,
       $.directive,
       $.code_block,
+      $.razor_code_block,
       $.control_block,
       $.self_closing_markup_element,
       $.markup_element,
@@ -81,6 +82,13 @@ export default grammar({
       "}",
     ),
 
+    razor_code_block: $ => seq(
+      "@",
+      "{",
+      optional(field("body", $.csharp_code)),
+      "}",
+    ),
+
     // Balanced braces keep method bodies and other nested C# blocks together.
     // The outer braces are Razor delimiters and are excluded from the
     // injected range.
@@ -113,6 +121,7 @@ export default grammar({
         $.razor_comment,
         $.html_comment,
         $.control_block,
+        $.razor_code_block,
         $.self_closing_markup_element,
         $.markup_element,
         $.razor_implicit_expression,
@@ -133,6 +142,7 @@ export default grammar({
         $.razor_comment,
         $.html_comment,
         $.control_block,
+        $.razor_code_block,
         $.self_closing_markup_element,
         $.markup_element,
         $.razor_implicit_expression,
