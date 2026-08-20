@@ -21,6 +21,53 @@ Self-closing markup preserves following code
   (newline))
 
 ================================================================================
+Implicit and explicit Razor expressions
+================================================================================
+Hello @user.Name, total: @(items.Count + 1)
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (text)
+  (razor_implicit_expression
+    name: (identifier)
+    (identifier))
+  (text)
+  (razor_explicit_expression
+    body: (csharp_expression
+      (csharp_expression_text)))
+  (newline))
+
+================================================================================
+Razor expressions inside attribute values
+================================================================================
+<MudNavLink Href="@item.Url" Title="View @(item.Name)">Open</MudNavLink>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup_element
+    open: (tag_open
+      name: (tag_name)
+      (attribute
+        name: (attribute_name)
+        value: (quoted_value
+          (razor_implicit_expression
+            name: (identifier))
+          content: (quoted_value_content)))
+      (attribute
+        name: (attribute_name)
+        value: (quoted_value
+          content: (quoted_value_content)
+          (razor_explicit_expression
+            body: (csharp_expression
+              (csharp_expression_text))))))
+    (text)
+    close: (tag_close
+      name: (tag_name)))
+  (newline))
+
+================================================================================
 Control-flow blocks preserve following code
 ================================================================================
 <div>
@@ -96,6 +143,8 @@ Multiline self-closing markup inside foreach
           (attribute
             name: (attribute_name)
             value: (quoted_value
+              (razor_implicit_expression
+                name: (identifier))
               content: (quoted_value_content)))
           (newline)
           (attribute

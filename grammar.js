@@ -20,7 +20,8 @@ export default grammar({
       $.control_block,
       $.self_closing_markup_element,
       $.markup_element,
-      $.razor_expression,
+      $.razor_implicit_expression,
+      $.razor_explicit_expression,
       $.text,
     )),
 
@@ -39,11 +40,15 @@ export default grammar({
 
     quoted_value: $ => seq(
       '"',
-      optional(field("content", $.quoted_value_content)),
+      repeat(choice(
+        field("content", $.quoted_value_content),
+        $.razor_explicit_expression,
+        $.razor_implicit_expression,
+      )),
       '"',
     ),
 
-    quoted_value_content: _ => token(prec(1, /[^"\n]+/)),
+    quoted_value_content: _ => token(prec(1, /[^@"\n]+/)),
 
     code_block: $ => seq(
       "@code",
@@ -84,7 +89,8 @@ export default grammar({
         $.control_block,
         $.self_closing_markup_element,
         $.markup_element,
-        $.razor_expression,
+        $.razor_implicit_expression,
+        $.razor_explicit_expression,
         $.control_text,
       )),
       "}",
@@ -101,7 +107,8 @@ export default grammar({
         $.control_block,
         $.self_closing_markup_element,
         $.markup_element,
-        $.razor_expression,
+        $.razor_implicit_expression,
+        $.razor_explicit_expression,
         $.text,
       )),
       field("close", $.tag_close),
@@ -145,10 +152,36 @@ export default grammar({
 
     unquoted_value: _ => token(prec(1, /[^\s>"']+/)),
 
-    razor_expression: $ => seq(
+    // An implicit Razor expression starts with an identifier and may contain
+    // a simple member-access chain. More complete C# syntax belongs to the
+    // injected C# grammar or an explicit expression.
+    razor_implicit_expression: $ => seq(
       "@",
       field("name", $.identifier),
+      repeat(seq(".", $.identifier)),
     ),
+
+    // Parenthesized expressions are kept as a distinct Razor node so editors
+    // can style the Razor transition independently from ordinary text.
+    razor_explicit_expression: $ => seq(
+      "@",
+      "(",
+      optional(field("body", $.csharp_expression)),
+      ")",
+    ),
+
+    csharp_expression: $ => repeat1(choice(
+      $.csharp_parenthesized_expression,
+      $.csharp_expression_text,
+    )),
+
+    csharp_parenthesized_expression: $ => seq(
+      "(",
+      optional($.csharp_expression),
+      ")",
+    ),
+
+    csharp_expression_text: _ => token(prec(-1, /[^()"\n]+/)),
 
     identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
 
