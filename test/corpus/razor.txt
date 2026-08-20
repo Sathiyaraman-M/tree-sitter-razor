@@ -1,0 +1,114 @@
+================================================================================
+Self-closing markup preserves following code
+================================================================================
+<MudThemeProvider />
+
+@code {
+  private int count = 0;
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (self_closing_markup_element
+    open: (self_closing_tag_open
+      name: (tag_name)))
+  (newline)
+  (newline)
+  (code_block
+    body: (csharp_code
+      (csharp_text)))
+  (newline))
+
+================================================================================
+Control-flow blocks preserve following code
+================================================================================
+<div>
+  @if (true)
+  {
+    <span>Visible</span>
+  }
+</div>
+
+@code {
+  private int count = 0;
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup_element
+    open: (tag_open
+      name: (tag_name))
+    (newline)
+    (control_block
+      condition: (control_condition)
+      (newline)
+      (newline)
+      (markup_element
+        open: (tag_open
+          name: (tag_name))
+        (text)
+        close: (tag_close
+          name: (tag_name)))
+      (newline))
+    (newline)
+    close: (tag_close
+      name: (tag_name)))
+  (newline)
+  (newline)
+  (code_block
+    body: (csharp_code
+      (csharp_text)))
+  (newline))
+
+================================================================================
+Multiline self-closing markup inside foreach
+================================================================================
+<div>
+  @foreach (var item in Items)
+  {
+    <MudNavLink
+      Href="@item.Url"
+      Match="NavLinkMatch.All" />
+  }
+</div>
+
+@code {
+  private int count = 0;
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (markup_element
+    open: (tag_open
+      name: (tag_name))
+    (newline)
+    (control_block
+      condition: (control_condition)
+      (newline)
+      (newline)
+      (self_closing_markup_element
+        open: (self_closing_tag_open
+          name: (tag_name)
+          (newline)
+          (attribute
+            name: (attribute_name)
+            value: (quoted_value
+              content: (quoted_value_content)))
+          (newline)
+          (attribute
+            name: (attribute_name)
+            value: (quoted_value
+              content: (quoted_value_content)))))
+      (newline))
+    (newline)
+    close: (tag_close
+      name: (tag_name)))
+  (newline)
+  (newline)
+  (code_block
+    body: (csharp_code
+      (csharp_text)))
+  (newline))
