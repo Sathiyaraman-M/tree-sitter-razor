@@ -1,0 +1,18 @@
+@page "/counter"
+@using System.Net.Http
+@inject HttpClient Http
+
+<h1>Counter</h1>
+
+<button @onclick="IncrementCount">
+    Click me
+</button>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
