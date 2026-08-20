@@ -282,6 +282,45 @@ Implicit C# expressions in component parameters
   (newline))
 
 ================================================================================
+Directive keyword fields
+================================================================================
+@page "/counter"
+@using System.Net.Http
+@inject HttpClient Http
+@layout MainLayout
+@inherits ComponentBase
+@attribute [Authorize]
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (directive
+    keyword: (directive_keyword)
+    value: (quoted_value
+      content: (quoted_value_content)))
+  (newline)
+  (directive
+    keyword: (directive_keyword)
+    value: (directive_value))
+  (newline)
+  (directive
+    keyword: (directive_keyword)
+    value: (directive_value))
+  (newline)
+  (directive
+    keyword: (directive_keyword)
+    value: (directive_value))
+  (newline)
+  (directive
+    keyword: (directive_keyword)
+    value: (directive_value))
+  (newline)
+  (directive
+    keyword: (directive_keyword)
+    value: (directive_value))
+  (newline))
+
+================================================================================
 C# conditions in Razor control blocks
 ================================================================================
 @if (isVisible && count > 0)

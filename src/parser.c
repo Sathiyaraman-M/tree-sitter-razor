@@ -92,12 +92,12 @@ static const char * const ts_symbol_names[] = {
   [sym_newline] = "newline",
   [sym_razor_comment] = "razor_comment",
   [sym_html_comment] = "html_comment",
-  [anon_sym_ATpage] = "@page",
-  [anon_sym_ATusing] = "@using",
-  [anon_sym_ATinject] = "@inject",
-  [anon_sym_ATlayout] = "@layout",
-  [anon_sym_ATinherits] = "@inherits",
-  [anon_sym_ATattribute] = "@attribute",
+  [anon_sym_ATpage] = "directive_keyword",
+  [anon_sym_ATusing] = "directive_keyword",
+  [anon_sym_ATinject] = "directive_keyword",
+  [anon_sym_ATlayout] = "directive_keyword",
+  [anon_sym_ATinherits] = "directive_keyword",
+  [anon_sym_ATattribute] = "directive_keyword",
   [sym_directive_value] = "directive_value",
   [anon_sym_DQUOTE] = "\"",
   [sym_quoted_value_content] = "quoted_value_content",
@@ -162,11 +162,11 @@ static const TSSymbol ts_symbol_map[] = {
   [sym_razor_comment] = sym_razor_comment,
   [sym_html_comment] = sym_html_comment,
   [anon_sym_ATpage] = anon_sym_ATpage,
-  [anon_sym_ATusing] = anon_sym_ATusing,
-  [anon_sym_ATinject] = anon_sym_ATinject,
-  [anon_sym_ATlayout] = anon_sym_ATlayout,
-  [anon_sym_ATinherits] = anon_sym_ATinherits,
-  [anon_sym_ATattribute] = anon_sym_ATattribute,
+  [anon_sym_ATusing] = anon_sym_ATpage,
+  [anon_sym_ATinject] = anon_sym_ATpage,
+  [anon_sym_ATlayout] = anon_sym_ATpage,
+  [anon_sym_ATinherits] = anon_sym_ATpage,
+  [anon_sym_ATattribute] = anon_sym_ATpage,
   [sym_directive_value] = sym_directive_value,
   [anon_sym_DQUOTE] = anon_sym_DQUOTE,
   [sym_quoted_value_content] = sym_quoted_value_content,
@@ -244,27 +244,27 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
   },
   [anon_sym_ATpage] = {
     .visible = true,
-    .named = false,
+    .named = true,
   },
   [anon_sym_ATusing] = {
     .visible = true,
-    .named = false,
+    .named = true,
   },
   [anon_sym_ATinject] = {
     .visible = true,
-    .named = false,
+    .named = true,
   },
   [anon_sym_ATlayout] = {
     .visible = true,
-    .named = false,
+    .named = true,
   },
   [anon_sym_ATinherits] = {
     .visible = true,
-    .named = false,
+    .named = true,
   },
   [anon_sym_ATattribute] = {
     .visible = true,
-    .named = false,
+    .named = true,
   },
   [sym_directive_value] = {
     .visible = true,
@@ -517,50 +517,51 @@ static const char * const ts_field_names[] = {
 
 static const TSMapSlice ts_field_map_slices[PRODUCTION_ID_COUNT] = {
   [1] = {.index = 0, .length = 1},
-  [2] = {.index = 1, .length = 1},
-  [3] = {.index = 2, .length = 1},
-  [4] = {.index = 3, .length = 1},
-  [5] = {.index = 4, .length = 2},
-  [6] = {.index = 6, .length = 1},
-  [7] = {.index = 7, .length = 1},
-  [8] = {.index = 8, .length = 2},
-  [9] = {.index = 10, .length = 1},
-  [10] = {.index = 11, .length = 2},
-  [11] = {.index = 13, .length = 1},
-  [12] = {.index = 14, .length = 2},
-  [13] = {.index = 16, .length = 2},
+  [2] = {.index = 1, .length = 2},
+  [3] = {.index = 3, .length = 1},
+  [4] = {.index = 4, .length = 1},
+  [5] = {.index = 5, .length = 2},
+  [6] = {.index = 7, .length = 1},
+  [7] = {.index = 8, .length = 1},
+  [8] = {.index = 9, .length = 2},
+  [9] = {.index = 11, .length = 1},
+  [10] = {.index = 12, .length = 2},
+  [11] = {.index = 14, .length = 1},
+  [12] = {.index = 15, .length = 2},
+  [13] = {.index = 17, .length = 2},
 };
 
 static const TSFieldMapEntry ts_field_map_entries[] = {
   [0] =
     {field_open, 0},
   [1] =
+    {field_keyword, 0},
     {field_value, 1},
-  [2] =
-    {field_name, 0},
   [3] =
-    {field_body, 1},
+    {field_name, 0},
   [4] =
+    {field_body, 1},
+  [5] =
     {field_close, 1},
     {field_open, 0},
-  [6] =
-    {field_content, 0},
   [7] =
-    {field_name, 1},
+    {field_content, 0},
   [8] =
+    {field_name, 1},
+  [9] =
     {field_close, 2},
     {field_open, 0},
-  [10] =
-    {field_content, 1, .inherited = true},
   [11] =
+    {field_content, 1, .inherited = true},
+  [12] =
     {field_content, 0, .inherited = true},
     {field_content, 1, .inherited = true},
-  [13] =
-    {field_body, 2},
   [14] =
+    {field_body, 2},
+  [15] =
     {field_condition, 1},
     {field_keyword, 0},
-  [16] =
+  [17] =
     {field_name, 0},
     {field_value, 2},
 };

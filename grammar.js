@@ -48,13 +48,15 @@ export default grammar({
     )),
 
     directive: $ => choice(
-      seq("@page", field("value", $.quoted_value)),
-      seq("@using", field("value", $.directive_value)),
-      seq("@inject", field("value", $.directive_value)),
-      seq("@layout", field("value", $.directive_value)),
-      seq("@inherits", field("value", $.directive_value)),
-      seq("@attribute", field("value", $.directive_value)),
+      seq(field("keyword", alias("@page", $.directive_keyword)), field("value", $.quoted_value)),
+      seq(field("keyword", alias("@using", $.directive_keyword)), field("value", $.directive_value)),
+      seq(field("keyword", alias("@inject", $.directive_keyword)), field("value", $.directive_value)),
+      seq(field("keyword", alias("@layout", $.directive_keyword)), field("value", $.directive_value)),
+      seq(field("keyword", alias("@inherits", $.directive_keyword)), field("value", $.directive_value)),
+      seq(field("keyword", alias("@attribute", $.directive_keyword)), field("value", $.directive_value)),
     ),
+
+    directive_keyword: _ => token(/@(page|using|inject|layout|inherits|attribute)/),
 
     directive_value: _ => token(prec(1, /[^\n]+/)),
 

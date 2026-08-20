@@ -147,8 +147,17 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "@page"
+              "type": "FIELD",
+              "name": "keyword",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "STRING",
+                  "value": "@page"
+                },
+                "named": true,
+                "value": "directive_keyword"
+              }
             },
             {
               "type": "FIELD",
@@ -164,8 +173,17 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "@using"
+              "type": "FIELD",
+              "name": "keyword",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "STRING",
+                  "value": "@using"
+                },
+                "named": true,
+                "value": "directive_keyword"
+              }
             },
             {
               "type": "FIELD",
@@ -181,8 +199,17 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "@inject"
+              "type": "FIELD",
+              "name": "keyword",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "STRING",
+                  "value": "@inject"
+                },
+                "named": true,
+                "value": "directive_keyword"
+              }
             },
             {
               "type": "FIELD",
@@ -198,8 +225,17 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "@layout"
+              "type": "FIELD",
+              "name": "keyword",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "STRING",
+                  "value": "@layout"
+                },
+                "named": true,
+                "value": "directive_keyword"
+              }
             },
             {
               "type": "FIELD",
@@ -215,8 +251,17 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "@inherits"
+              "type": "FIELD",
+              "name": "keyword",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "STRING",
+                  "value": "@inherits"
+                },
+                "named": true,
+                "value": "directive_keyword"
+              }
             },
             {
               "type": "FIELD",
@@ -232,8 +277,17 @@
           "type": "SEQ",
           "members": [
             {
-              "type": "STRING",
-              "value": "@attribute"
+              "type": "FIELD",
+              "name": "keyword",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "STRING",
+                  "value": "@attribute"
+                },
+                "named": true,
+                "value": "directive_keyword"
+              }
             },
             {
               "type": "FIELD",
@@ -246,6 +300,13 @@
           ]
         }
       ]
+    },
+    "directive_keyword": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "@(page|using|inject|layout|inherits|attribute)"
+      }
     },
     "directive_value": {
       "type": "TOKEN",

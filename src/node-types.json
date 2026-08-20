@@ -235,6 +235,16 @@
     "type": "directive",
     "named": true,
     "fields": {
+      "keyword": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "directive_keyword",
+            "named": true
+          }
+        ]
+      },
       "value": {
         "multiple": false,
         "required": true,
@@ -570,10 +580,6 @@
     "named": false
   },
   {
-    "type": "@attribute",
-    "named": false
-  },
-  {
     "type": "@code",
     "named": false
   },
@@ -590,27 +596,7 @@
     "named": false
   },
   {
-    "type": "@inherits",
-    "named": false
-  },
-  {
-    "type": "@inject",
-    "named": false
-  },
-  {
-    "type": "@layout",
-    "named": false
-  },
-  {
-    "type": "@page",
-    "named": false
-  },
-  {
     "type": "@switch",
-    "named": false
-  },
-  {
-    "type": "@using",
     "named": false
   },
   {
@@ -635,6 +621,10 @@
   },
   {
     "type": "csharp_text",
+    "named": true
+  },
+  {
+    "type": "directive_keyword",
     "named": true
   },
   {
