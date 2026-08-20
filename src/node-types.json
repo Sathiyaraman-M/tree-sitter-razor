@@ -301,6 +301,10 @@
         {
           "type": "attribute",
           "named": true
+        },
+        {
+          "type": "newline",
+          "named": true
         }
       ]
     }
@@ -386,6 +390,10 @@
       "types": [
         {
           "type": "attribute",
+          "named": true
+        },
+        {
+          "type": "newline",
           "named": true
         }
       ]

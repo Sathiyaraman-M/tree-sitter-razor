@@ -114,14 +114,14 @@ export default grammar({
     tag_open: $ => seq(
       "<",
       field("name", $.tag_name),
-      repeat($.attribute),
+      repeat(choice($.attribute, $.newline)),
       ">",
     ),
 
     self_closing_tag_open: $ => seq(
       "<",
       field("name", $.tag_name),
-      repeat($.attribute),
+      repeat(choice($.attribute, $.newline)),
       "/>",
     ),
 
