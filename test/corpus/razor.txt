@@ -68,6 +68,28 @@ Razor expressions inside attribute values
   (newline))
 
 ================================================================================
+Lambda inside an explicit Razor expression
+================================================================================
+<MudSnackbarProvider Value="@(async () => await Context.Funny())" />
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (self_closing_markup_element
+    open: (self_closing_tag_open
+      name: (tag_name)
+      (attribute
+        name: (attribute_name)
+        value: (quoted_value
+          (razor_explicit_expression
+            body: (csharp_expression
+              (csharp_expression_text)
+              (csharp_parenthesized_expression)
+              (csharp_expression_text)
+              (csharp_parenthesized_expression)))))))
+  (newline))
+
+================================================================================
 Control-flow blocks preserve following code
 ================================================================================
 <div>
