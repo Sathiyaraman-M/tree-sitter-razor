@@ -214,6 +214,65 @@ Implicit C# expressions in component parameters
   (newline))
 
 ================================================================================
+C# conditions in Razor control blocks
+================================================================================
+@if (isVisible && count > 0)
+{
+    <span>Visible</span>
+}
+@foreach (var item in Items)
+{
+    <span>@item.Name</span>
+}
+@switch (status)
+{
+    <span>Current status</span>
+}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (control_block
+    (control_condition)
+    (newline)
+    (newline)
+    (markup_element
+      (tag_open
+        (tag_name))
+      (text)
+      (tag_close
+        (tag_name)))
+    (newline))
+  (newline)
+  (control_block
+    (control_condition)
+    (newline)
+    (newline)
+    (markup_element
+      (tag_open
+        (tag_name))
+      (razor_implicit_expression
+        (csharp_implicit_expression
+          (identifier)
+          (identifier)))
+      (tag_close
+        (tag_name)))
+    (newline))
+  (newline)
+  (control_block
+    (control_condition)
+    (newline)
+    (newline)
+    (markup_element
+      (tag_open
+        (tag_name))
+      (text)
+      (tag_close
+        (tag_name)))
+    (newline))
+  (newline))
+
+================================================================================
 Control-flow blocks preserve following code
 ================================================================================
 <div>
