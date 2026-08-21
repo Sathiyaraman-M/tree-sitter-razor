@@ -17,7 +17,14 @@ export default grammar({
       $.newline,
       $.razor_comment,
       $.html_comment,
-      $.directive,
+      $.page_directive,
+      $.using_directive,
+      $.inject_directive,
+      $.layout_directive,
+      $.inherits_directive,
+      $.implements_directive,
+      $.attribute_directive,
+      $.directive_fallback,
       $.code_block,
       $.razor_code_block,
       $.control_block,
@@ -48,18 +55,81 @@ export default grammar({
       "-->",
     )),
 
-    directive: $ => choice(
-      seq(field("keyword", alias("@page", $.directive_keyword)), field("value", $.quoted_value)),
-      seq(field("keyword", alias("@using", $.directive_keyword)), field("value", $.directive_value)),
-      seq(field("keyword", alias("@inject", $.directive_keyword)), field("value", $.directive_value)),
-      seq(field("keyword", alias("@layout", $.directive_keyword)), field("value", $.directive_value)),
-      seq(field("keyword", alias("@inherits", $.directive_keyword)), field("value", $.directive_value)),
-      seq(field("keyword", alias("@attribute", $.directive_keyword)), field("value", $.directive_value)),
+    page_directive: $ => prec(1, seq(
+      field("keyword", alias("@page", $.directive_keyword)),
+      field("path", $.quoted_value),
+    )),
+
+    using_directive: $ => prec(1, seq(
+      field("keyword", alias("@using", $.directive_keyword)),
+      optional(choice(
+        alias("static", $.directive_modifier),
+        seq(field("alias", $.identifier), "="),
+      )),
+      field("namespace", $.qualified_name),
+    )),
+
+    inject_directive: $ => prec(1, seq(
+      field("keyword", alias("@inject", $.directive_keyword)),
+      field("type", $.type_name),
+      field("identifier", $.identifier),
+    )),
+
+    layout_directive: $ => prec(1, seq(
+      field("keyword", alias("@layout", $.directive_keyword)),
+      field("type", $.type_name),
+    )),
+
+    inherits_directive: $ => prec(1, seq(
+      field("keyword", alias("@inherits", $.directive_keyword)),
+      field("type", $.type_name),
+    )),
+
+    implements_directive: $ => prec(1, seq(
+      field("keyword", alias("@implements", $.directive_keyword)),
+      field("type", $.type_name),
+    )),
+
+    attribute_directive: $ => prec(1, seq(
+      field("keyword", alias("@attribute", $.directive_keyword)),
+      field("attribute", $.attribute_value),
+    )),
+
+    directive_fallback: $ => seq(
+      field("keyword", $.directive_keyword),
+      field("value", $.directive_value),
     ),
 
-    directive_keyword: _ => token(/@(page|using|inject|layout|inherits|attribute)/),
+    directive_keyword: _ => token(/@(page|using|inject|layout|inherits|implements|attribute)/),
+
+    directive_modifier: _ => token(/static/),
 
     directive_value: _ => token(prec(1, /[^\n]+/)),
+
+    attribute_value: _ => token(prec(1, /[^\n]+/)),
+
+    type_name: $ => prec.right(seq(
+      $.qualified_name,
+      optional($.generic_arguments),
+      repeat(choice($.nullable_suffix, $.array_suffix)),
+    )),
+
+    generic_arguments: $ => seq(
+      "<",
+      $.type_name,
+      repeat(seq(",", $.type_name)),
+      ">",
+    ),
+
+    qualified_name: $ => seq(
+      optional(seq(alias("global", $.type_qualifier), "::")),
+      $.identifier,
+      repeat(seq(".", $.identifier)),
+    ),
+
+    nullable_suffix: _ => "?",
+
+    array_suffix: _ => seq("[", repeat(","), "]"),
 
     quoted_value: $ => seq(
       '"',

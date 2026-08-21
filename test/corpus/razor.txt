@@ -328,35 +328,123 @@ Directive keyword fields
 @inject HttpClient Http
 @layout MainLayout
 @inherits ComponentBase
+@implements IDisposable
 @attribute [Authorize]
 
 --------------------------------------------------------------------------------
 
 (source_file
-  (directive
+  (page_directive
     keyword: (directive_keyword)
-    value: (quoted_value
+    path: (quoted_value
       content: (quoted_value_content)))
   (newline)
-  (directive
+  (using_directive
     keyword: (directive_keyword)
-    value: (directive_value))
+    namespace: (qualified_name
+      (identifier)
+      (identifier)
+      (identifier)))
   (newline)
-  (directive
+  (inject_directive
     keyword: (directive_keyword)
-    value: (directive_value))
+    type: (type_name
+      (qualified_name
+        (identifier)))
+    identifier: (identifier))
   (newline)
-  (directive
+  (layout_directive
     keyword: (directive_keyword)
-    value: (directive_value))
+    type: (type_name
+      (qualified_name
+        (identifier))))
   (newline)
-  (directive
+  (inherits_directive
     keyword: (directive_keyword)
-    value: (directive_value))
+    type: (type_name
+      (qualified_name
+        (identifier))))
   (newline)
-  (directive
+  (implements_directive
     keyword: (directive_keyword)
-    value: (directive_value))
+    type: (type_name
+      (qualified_name
+        (identifier))))
+  (newline)
+  (attribute_directive
+    keyword: (directive_keyword)
+    attribute: (attribute_value))
+  (newline))
+
+================================================================================
+Structured directive values
+================================================================================
+@using static System.Linq
+@using Tasks = System.Threading.Tasks
+@inject Dictionary<string, List<int?>> Services
+@inherits global::Components.BaseComponent[]
+@implements IAsyncDisposable?
+@inject HttpClient
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (using_directive
+    keyword: (directive_keyword)
+    (directive_modifier)
+    namespace: (qualified_name
+      (identifier)
+      (identifier)))
+  (newline)
+  (using_directive
+    keyword: (directive_keyword)
+    alias: (identifier)
+    namespace: (qualified_name
+      (identifier)
+      (identifier)
+      (identifier)))
+  (newline)
+  (inject_directive
+    keyword: (directive_keyword)
+    type: (type_name
+      (qualified_name
+        (identifier))
+      (generic_arguments
+        (type_name
+          (qualified_name
+            (identifier)))
+        (type_name
+          (qualified_name
+            (identifier))
+          (generic_arguments
+            (type_name
+              (qualified_name
+                (identifier))
+              (nullable_suffix))))))
+    identifier: (identifier))
+  (newline)
+  (inherits_directive
+    keyword: (directive_keyword)
+    type: (type_name
+      (qualified_name
+        (type_qualifier)
+        (identifier)
+        (identifier))
+      (array_suffix)))
+  (newline)
+  (implements_directive
+    keyword: (directive_keyword)
+    type: (type_name
+      (qualified_name
+        (identifier))
+      (nullable_suffix)))
+  (newline)
+  (inject_directive
+    keyword: (directive_keyword)
+    type: (type_name
+      (qualified_name
+        (identifier)))
+    identifier: (MISSING identifier))
   (newline))
 
 ================================================================================
