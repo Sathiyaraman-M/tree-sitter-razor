@@ -171,7 +171,13 @@ export default grammar(CSHARP, {
       prec(10, seq(
         field("keyword", $.if_keyword),
         field("condition", $.control_condition),
-        repeat($.newline), "{", repeat($._blazor_child), "}",
+        repeat($.newline),
+        "{", repeat($._blazor_child), "}",
+        optional(seq(
+          field("else_keyword", $.else_keyword),
+          repeat($.newline),
+          "{", repeat($._blazor_child), "}",
+        )),
       )),
       prec(10, seq(
         field("keyword", $.foreach_keyword),
@@ -214,6 +220,7 @@ export default grammar(CSHARP, {
     for_condition: $ => $._for_statement_conditions,
 
     if_keyword: _ => token(prec(20, "@if")),
+    else_keyword: _ => token(prec(20, "else")),
     foreach_keyword: _ => token(prec(20, "@foreach")),
     for_keyword: _ => token(prec(20, "@for")),
     while_keyword: _ => token(prec(20, "@while")),

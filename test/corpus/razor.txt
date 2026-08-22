@@ -700,6 +700,44 @@ Control-flow blocks preserve following code
   (newline))
 
 ================================================================================
+Razor if-else control blocks
+================================================================================
+@if (isVisible)
+{
+    <span>Visible</span>
+}
+else
+{
+    <span>Hidden</span>
+}
+
+--------------------------------------------------------------------------------
+
+(compilation_unit
+  (control_block
+    keyword: (if_keyword)
+    condition: (control_condition
+      (identifier))
+    (newline)
+    (html_element
+      open: (html_tag_open
+        name: (html_tag_name))
+      (text)
+      close: (html_tag_close
+        name: (html_tag_name)))
+    (newline)
+    else_keyword: (else_keyword)
+    (newline)
+    (html_element
+      open: (html_tag_open
+        name: (html_tag_name))
+      (text)
+      close: (html_tag_close
+        name: (html_tag_name)))
+    (newline))
+  (newline))
+
+================================================================================
 Multiline self-closing markup inside foreach
 ================================================================================
 <div>

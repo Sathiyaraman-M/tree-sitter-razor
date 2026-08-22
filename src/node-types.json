@@ -2298,6 +2298,16 @@
           }
         ]
       },
+      "else_keyword": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "else_keyword",
+            "named": true
+          }
+        ]
+      },
       "keyword": {
         "multiple": false,
         "required": true,
@@ -7635,6 +7645,10 @@
   {
     "type": "else",
     "named": false
+  },
+  {
+    "type": "else_keyword",
+    "named": true
   },
   {
     "type": "enum",
