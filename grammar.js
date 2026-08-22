@@ -7,18 +7,41 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-export default grammar({
+import CSHARP from "tree-sitter-c-sharp/grammar.js";
+
+export default grammar(CSHARP, {
   name: "razor",
 
-  extras: $ => [/[ \t\r]/],
+  extras: $ => [$.razor_comment, $.comment, /\s+/],
+
+  conflicts: ($, inherited) => [
+    [$.expression, $.parenthesized_expression],
+    [$.expression, $._parenthesized_lvalue_expression],
+    [$.initializer_expression, $.razor_code_block],
+    [$.destructor_declaration, $._simple_name],
+    [$.field_declaration, $.local_declaration_statement],
+    [$.method_declaration, $._local_function_declaration],
+    [$.preproc_if, $.preproc_if_in_top_level, $.preproc_if_in_attribute_list],
+    [$.preproc_if, $.preproc_if_in_top_level],
+    [$.preproc_if, $.preproc_if_in_top_level, $.preproc_if_in_expression, $.preproc_if_in_attribute_list],
+    [$.preproc_if, $.preproc_if_in_top_level, $.preproc_if_in_expression],
+    [$.preproc_else, $.preproc_else_in_top_level, $.preproc_else_in_expression, $.preproc_else_in_attribute_list],
+    [$.declaration, $.preproc_if_in_top_level],
+    [$.type_declaration, $.declaration],
+    [$.declaration, $.preproc_else_in_top_level],
+    [$.preproc_elif, $.preproc_elif_in_top_level, $.preproc_elif_in_expression, $.preproc_elif_in_attribute_list],
+    [$.scoped_type, $._reserved_identifier],
+    [$.implicit_type, $._reserved_identifier],
+    ...inherited,
+  ],
 
   rules: {
-    source_file: $ => repeat(choice(
+    compilation_unit: $ => repeat(choice(
       $.newline,
       $.razor_comment,
       $.html_comment,
       $.page_directive,
-      $.using_directive,
+      alias($.razor_using_directive, $.using_directive),
       $.inject_directive,
       $.layout_directive,
       $.inherits_directive,
@@ -60,7 +83,7 @@ export default grammar({
       field("path", $.quoted_value),
     )),
 
-    using_directive: $ => prec(1, seq(
+    razor_using_directive: $ => prec(1, seq(
       field("keyword", alias("@using", $.directive_keyword)),
       optional(choice(
         alias("static", $.directive_modifier),
@@ -71,23 +94,23 @@ export default grammar({
 
     inject_directive: $ => prec(1, seq(
       field("keyword", alias("@inject", $.directive_keyword)),
-      field("type", $.type_name),
+      field("type", $.type),
       field("identifier", $.identifier),
     )),
 
     layout_directive: $ => prec(1, seq(
       field("keyword", alias("@layout", $.directive_keyword)),
-      field("type", $.type_name),
+      field("type", $.type),
     )),
 
     inherits_directive: $ => prec(1, seq(
       field("keyword", alias("@inherits", $.directive_keyword)),
-      field("type", $.type_name),
+      field("type", $.type),
     )),
 
     implements_directive: $ => prec(1, seq(
       field("keyword", alias("@implements", $.directive_keyword)),
-      field("type", $.type_name),
+      field("type", $.type),
     )),
 
     attribute_directive: $ => prec(1, seq(
@@ -107,29 +130,6 @@ export default grammar({
     directive_value: _ => token(prec(1, /[^\n]+/)),
 
     attribute_value: _ => token(prec(1, /[^\n]+/)),
-
-    type_name: $ => prec.right(seq(
-      $.qualified_name,
-      optional($.generic_arguments),
-      repeat(choice($.nullable_suffix, $.array_suffix)),
-    )),
-
-    generic_arguments: $ => seq(
-      "<",
-      $.type_name,
-      repeat(seq(",", $.type_name)),
-      ">",
-    ),
-
-    qualified_name: $ => seq(
-      optional(seq(alias("global", $.type_qualifier), "::")),
-      $.identifier,
-      repeat(seq(".", $.identifier)),
-    ),
-
-    nullable_suffix: _ => "?",
-
-    array_suffix: _ => seq("[", repeat(","), "]"),
 
     quoted_value: $ => seq(
       '"',
@@ -159,49 +159,80 @@ export default grammar({
       "}",
     ),
 
-    // Balanced braces keep method bodies and other nested C# blocks together.
-    // The outer braces are Razor delimiters and are excluded from the
-    // injected range.
-    csharp_code: $ => repeat1(choice($.csharp_block, $.csharp_text)),
+    // The outer braces are Razor delimiters. The contents use the native C#
+    // declaration and statement rules, including their nested blocks.
+    csharp_code: $ => repeat1(choice(
+      $.declaration,
+      $.statement,
+    )),
 
-    csharp_block: $ => seq(
-      "{",
-      repeat(choice($.csharp_block, $.csharp_text)),
-      "}",
+    // Razor control-flow blocks contain a native C# header followed by markup.
+    control_block: $ => choice(
+      prec(10, seq(
+        field("keyword", $.if_keyword),
+        field("condition", $.control_condition),
+        repeat($.newline), "{", repeat($._blazor_child), "}",
+      )),
+      prec(10, seq(
+        field("keyword", $.foreach_keyword),
+        field("condition", $.foreach_condition),
+        repeat($.newline), "{", repeat($._blazor_child), "}",
+      )),
+      prec(10, seq(
+        field("keyword", $.for_keyword),
+        field("condition", $.for_condition),
+        repeat($.newline), "{", repeat($._blazor_child), "}",
+      )),
+      prec(10, seq(
+        field("keyword", $.while_keyword),
+        field("condition", $.control_condition),
+        repeat($.newline), "{", repeat($._blazor_child), "}",
+      )),
+      prec(10, seq(
+        field("keyword", $.switch_keyword),
+        field("condition", $.control_condition),
+        repeat($.newline), "{", repeat($._blazor_child), "}",
+      )),
     ),
 
-    csharp_text: _ => token(prec(-1, /[^{}]+/)),
+    control_condition: $ => seq("(", $.expression, ")"),
 
-    // Razor control-flow blocks contain a C# header followed by markup.
-    // Keep the header and body delimiters out of the injected C# range; only
-    // @code blocks are injected as complete C# documents for now.
-    control_block: $ => seq(
-      field("keyword", choice(
-        "@if",
-        "@foreach",
-        "@for",
-        "@while",
-        "@switch",
-      )),
-      field("condition", $.control_condition),
-      repeat($.newline),
-      "{",
-      repeat(choice(
-        $.newline,
-        $.razor_comment,
-        $.html_comment,
-        $.control_block,
-        $.razor_code_block,
-        $.html_element,
-        $.component_element,
-        $.razor_implicit_expression,
-        $.razor_explicit_expression,
-        $.control_text,
-      )),
-      "}",
+    foreach_condition: $ => seq(
+      "(",
+      choice(
+        seq(
+          field("type", $.type),
+          field("left", choice($.identifier, $.tuple_pattern)),
+        ),
+        field("left", $.expression),
+      ),
+      "in",
+      field("right", $.expression),
+      ")",
     ),
 
-    control_condition: _ => token(prec(1, /[^{}\n]+/)),
+    for_condition: $ => $._for_statement_conditions,
+
+    if_keyword: _ => token(prec(20, "@if")),
+    foreach_keyword: _ => token(prec(20, "@foreach")),
+    for_keyword: _ => token(prec(20, "@for")),
+    while_keyword: _ => token(prec(20, "@while")),
+    switch_keyword: _ => token(prec(20, "@switch")),
+
+    _blazor_child: $ => choice(
+      $.newline,
+      $.razor_comment,
+      $.html_comment,
+      $.control_block,
+      $.razor_code_block,
+      $.html_element,
+      $.component_element,
+      $.razor_implicit_expression,
+      $.razor_explicit_expression,
+      $.statement,
+      $.declaration,
+      $.control_text,
+    ),
 
     control_text: _ => token(prec(-1, /[^@<{}\n]+/)),
 
@@ -314,38 +345,15 @@ export default grammar({
 
     razor_implicit_expression: $ => seq(
       "@",
-      field("body", $.csharp_implicit_expression),
-    ),
-
-    csharp_implicit_expression: $ => seq(
-      field("name", $.identifier),
-      repeat(choice(
-        prec(2, seq(".", $.identifier)),
-        prec(2, $.csharp_parenthesized_expression),
-      )),
+      field("body", prec.left(1, $.expression)),
     ),
 
     razor_explicit_expression: $ => seq(
       "@",
       "(",
-      optional(field("body", $.csharp_expression)),
+      optional(field("body", $.expression)),
       ")",
     ),
-
-    csharp_expression: $ => repeat1(choice(
-      $.csharp_parenthesized_expression,
-      $.csharp_expression_text,
-    )),
-
-    csharp_parenthesized_expression: $ => seq(
-      "(",
-      optional($.csharp_expression),
-      ")",
-    ),
-
-    csharp_expression_text: _ => token(prec(-1, /[^()"\n]+/)),
-
-    identifier: _ => /[A-Za-z_][A-Za-z0-9_]*/,
 
     text: _ => token(prec(-1, /[^@<\n]+/)),
   }

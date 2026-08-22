@@ -1,0 +1,9 @@
+// Reuse the C# external scanner for interpolated and raw string literals.
+// The scanner symbols are renamed because this grammar owns the parser ABI.
+#define tree_sitter_c_sharp_external_scanner_create tree_sitter_razor_external_scanner_create
+#define tree_sitter_c_sharp_external_scanner_destroy tree_sitter_razor_external_scanner_destroy
+#define tree_sitter_c_sharp_external_scanner_scan tree_sitter_razor_external_scanner_scan
+#define tree_sitter_c_sharp_external_scanner_serialize tree_sitter_razor_external_scanner_serialize
+#define tree_sitter_c_sharp_external_scanner_deserialize tree_sitter_razor_external_scanner_deserialize
+
+#include "../node_modules/tree-sitter-c-sharp/src/scanner.c"

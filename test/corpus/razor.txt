@@ -9,18 +9,72 @@ Self-closing markup preserves following code
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (component_element
     open: (component_self_closing_tag_open
       name: (component_tag_name)))
-  (newline)
-  (newline)
   (code_block
     body: (csharp_code
-      (csharp_text)))
+      (local_declaration_statement
+        (modifier)
+        (variable_declaration
+          type: (predefined_type)
+          (variable_declarator
+            name: (identifier)
+            (integer_literal))))))
   (newline))
 
+================================================================================
+Native C# declarations and nested blocks
+================================================================================
+@code {
+  private string Render(string name) => $"Hello {name}";
 
+  private void Increment()
+  {
+    var text = "{ braces are string content }";
+    count++;
+  }
+}
+
+--------------------------------------------------------------------------------
+
+(compilation_unit
+  (code_block
+    (csharp_code
+      (method_declaration
+        (modifier)
+        (predefined_type)
+        (identifier)
+        (parameter_list
+          (parameter
+            (predefined_type)
+            (identifier)))
+        (arrow_expression_clause
+          (interpolated_string_expression
+            (interpolation_start)
+            (string_content)
+            (interpolation
+              (interpolation_brace)
+              (identifier)
+              (interpolation_brace)))))
+      (method_declaration
+        (modifier)
+        (predefined_type)
+        (identifier)
+        (parameter_list)
+        (block
+          (local_declaration_statement
+            (variable_declaration
+              (implicit_type)
+              (variable_declarator
+                (identifier)
+                (string_literal
+                  (string_literal_content)))))
+          (expression_statement
+            (postfix_unary_expression
+              (identifier)))))))
+  (newline))
 
 ================================================================================
 HTML and component classification
@@ -32,7 +86,7 @@ HTML and component classification
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (html_element
     (html_tag_open
       (html_tag_name)
@@ -83,7 +137,7 @@ Component nesting HTML and components
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (component_element
     (component_tag_open
       (component_tag_name)
@@ -91,9 +145,7 @@ Component nesting HTML and components
         (component_parameter_name)
         (quoted_value
           (razor_implicit_expression
-            (csharp_implicit_expression
-              (identifier))))))
-    (newline)
+            (identifier)))))
     (html_element
       (html_tag_open
         (html_tag_name)
@@ -101,14 +153,12 @@ Component nesting HTML and components
           (html_attribute_name)
           (quoted_value
             (quoted_value_content))))
-      (newline)
       (component_element
         (component_tag_open
           (component_tag_name))
         (text)
         (component_tag_close
           (component_tag_name)))
-      (newline)
       (html_tag_close
         (html_tag_name)))
     (newline)
@@ -123,22 +173,20 @@ Component parameters and Razor attributes
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (component_element
     (component_self_closing_tag_open
       (component_tag_name)
       (component_parameter
         (component_parameter_name)
         (quoted_value
-          (razor_explicit_expression
-            (csharp_expression
-              (csharp_expression_text)))))
-      (component_parameter
-        (component_parameter_name)
-        (quoted_value
           (razor_implicit_expression
-            (csharp_implicit_expression
-              (identifier)))))
+            (cast_expression
+              (identifier)
+              (string_literal
+                (string_literal_content))))
+          (razor_implicit_expression
+            (identifier))))
       (razor_attribute
         (razor_attribute_name)
         (quoted_value
@@ -162,7 +210,7 @@ Inline Razor code block
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (component_element
     (component_tag_open
       (component_tag_name)
@@ -170,17 +218,21 @@ Inline Razor code block
         (component_parameter_name)
         (quoted_value
           (razor_implicit_expression
-            (csharp_implicit_expression
-              (identifier))))))
-    (newline)
+            (identifier)))))
     (component_element
       (component_tag_open
         (component_tag_name))
-      (newline)
       (razor_code_block
         (csharp_code
-          (csharp_text)))
-      (newline)
+          (expression_statement
+            (invocation_expression
+              (member_access_expression
+                (identifier)
+                (identifier))
+              (argument_list
+                (argument
+                  (string_literal
+                    (string_literal_content))))))))
       (component_tag_close
         (component_tag_name)))
     (newline)
@@ -202,18 +254,15 @@ Before @* <div>ignored</div>
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (text)
   (razor_comment)
   (text)
   (newline)
-  (newline)
   (html_element
     (html_tag_open
       (html_tag_name))
-    (newline)
     (razor_comment)
-    (newline)
     (html_element
       (html_tag_open
         (html_tag_name))
@@ -236,15 +285,13 @@ HTML comments
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (html_comment)
   (newline)
   (html_element
     (html_tag_open
       (html_tag_name))
-    (newline)
     (html_comment)
-    (newline)
     (html_element
       (html_tag_open
         (html_tag_name))
@@ -263,16 +310,20 @@ Hello @user.Name, total: @(items.Count + 1)
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (text)
   (razor_implicit_expression
-    body: (csharp_implicit_expression
-      name: (identifier)
-      (identifier)))
+    body: (member_access_expression
+      expression: (identifier)
+      name: (identifier)))
   (text)
-  (razor_explicit_expression
-    body: (csharp_expression
-      (csharp_expression_text)))
+  (razor_implicit_expression
+    body: (parenthesized_expression
+      (binary_expression
+        left: (member_access_expression
+          expression: (identifier)
+          name: (identifier))
+        right: (integer_literal))))
   (newline))
 
 ================================================================================
@@ -282,7 +333,7 @@ Razor expressions inside attribute values
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (component_element
     open: (component_tag_open
       name: (component_tag_name)
@@ -290,16 +341,18 @@ Razor expressions inside attribute values
         name: (component_parameter_name)
         value: (quoted_value
           (razor_implicit_expression
-            body: (csharp_implicit_expression
-              name: (identifier)
-              (identifier)))))
+            body: (member_access_expression
+              expression: (identifier)
+              name: (identifier)))))
       (component_parameter
         name: (component_parameter_name)
         value: (quoted_value
           content: (quoted_value_content)
-          (razor_explicit_expression
-            body: (csharp_expression
-              (csharp_expression_text))))))
+          (razor_implicit_expression
+            body: (parenthesized_expression
+              (member_access_expression
+                expression: (identifier)
+                name: (identifier)))))))
     (text)
     close: (component_tag_close
       name: (component_tag_name)))
@@ -312,19 +365,24 @@ Lambda inside an explicit Razor expression
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (component_element
     open: (component_self_closing_tag_open
       name: (component_tag_name)
       (component_parameter
         name: (component_parameter_name)
         value: (quoted_value
-          (razor_explicit_expression
-            body: (csharp_expression
-              (csharp_expression_text)
-              (csharp_parenthesized_expression)
-              (csharp_expression_text)
-              (csharp_parenthesized_expression)))))))
+          (razor_implicit_expression
+            body: (parenthesized_expression
+              (lambda_expression
+                (modifier)
+                parameters: (parameter_list)
+                body: (await_expression
+                  (invocation_expression
+                    function: (member_access_expression
+                      expression: (identifier)
+                      name: (identifier))
+                    arguments: (argument_list))))))))))
   (newline))
 
 ================================================================================
@@ -345,7 +403,7 @@ Implicit C# expressions in component parameters
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (component_element
     (component_tag_open
       (component_tag_name)
@@ -353,13 +411,10 @@ Implicit C# expressions in component parameters
         (component_parameter_name)
         (quoted_value
           (razor_implicit_expression
-            (csharp_implicit_expression
-              (identifier)
-              (csharp_parenthesized_expression
-                (csharp_expression
-                  (csharp_expression_text)))
+            (member_access_expression
+              (typeof_expression
+                (identifier))
               (identifier))))))
-    (newline)
     (component_element
       (component_tag_open
         (component_tag_name)
@@ -367,7 +422,6 @@ Implicit C# expressions in component parameters
           (component_parameter_name)
           (quoted_value
             (quoted_value_content))))
-      (newline)
       (component_element
         (component_self_closing_tag_open
           (component_tag_name)
@@ -375,18 +429,13 @@ Implicit C# expressions in component parameters
             (component_parameter_name)
             (quoted_value
               (razor_implicit_expression
-                (csharp_implicit_expression
-                  (identifier)))))
+                (identifier))))
           (component_parameter
             (component_parameter_name)
             (quoted_value
               (razor_implicit_expression
-                (csharp_implicit_expression
-                  (identifier)
-                  (csharp_parenthesized_expression
-                    (csharp_expression
-                      (csharp_expression_text)))))))))
-      (newline)
+                (typeof_expression
+                  (identifier)))))))
       (component_element
         (component_self_closing_tag_open
           (component_tag_name)
@@ -394,27 +443,22 @@ Implicit C# expressions in component parameters
             (component_parameter_name)
             (quoted_value
               (razor_implicit_expression
-                (csharp_implicit_expression
-                  (identifier)))))
+                (identifier))))
           (component_parameter
             (component_parameter_name)
             (quoted_value
               (quoted_value_content)))))
-      (newline)
       (component_tag_close
         (component_tag_name)))
-    (newline)
     (component_element
       (component_tag_open
         (component_tag_name))
-      (newline)
       (component_element
         (component_tag_open
           (component_tag_name))
         (text)
         (component_tag_close
           (component_tag_name)))
-      (newline)
       (component_element
         (component_tag_open
           (component_tag_name)
@@ -422,12 +466,8 @@ Implicit C# expressions in component parameters
             (component_parameter_name)
             (quoted_value
               (razor_implicit_expression
-                (csharp_implicit_expression
-                  (identifier)
-                  (csharp_parenthesized_expression
-                    (csharp_expression
-                      (csharp_expression_text))))))))
-        (newline)
+                (typeof_expression
+                  (identifier))))))
         (html_element
           (html_tag_open
             (html_tag_name)
@@ -438,10 +478,8 @@ Implicit C# expressions in component parameters
           (text)
           (html_tag_close
             (html_tag_name)))
-        (newline)
         (component_tag_close
           (component_tag_name)))
-      (newline)
       (component_tag_close
         (component_tag_name)))
     (newline)
@@ -462,44 +500,31 @@ Directive keyword fields
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (page_directive
     keyword: (directive_keyword)
     path: (quoted_value
       content: (quoted_value_content)))
-  (newline)
   (using_directive
     keyword: (directive_keyword)
     namespace: (qualified_name
-      (identifier)
-      (identifier)
-      (identifier)))
-  (newline)
+      qualifier: (qualified_name
+        qualifier: (identifier)
+        name: (identifier))
+      name: (identifier)))
   (inject_directive
     keyword: (directive_keyword)
-    type: (type_name
-      (qualified_name
-        (identifier)))
+    type: (identifier)
     identifier: (identifier))
-  (newline)
   (layout_directive
     keyword: (directive_keyword)
-    type: (type_name
-      (qualified_name
-        (identifier))))
-  (newline)
+    type: (identifier))
   (inherits_directive
     keyword: (directive_keyword)
-    type: (type_name
-      (qualified_name
-        (identifier))))
-  (newline)
+    type: (identifier))
   (implements_directive
     keyword: (directive_keyword)
-    type: (type_name
-      (qualified_name
-        (identifier))))
-  (newline)
+    type: (identifier))
   (attribute_directive
     keyword: (directive_keyword)
     attribute: (attribute_value))
@@ -513,67 +538,54 @@ Structured directive values
 @inject Dictionary<string, List<int?>> Services
 @inherits global::Components.BaseComponent[]
 @implements IAsyncDisposable?
-@inject HttpClient
+@inject HttpClient Http
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (using_directive
     keyword: (directive_keyword)
     (directive_modifier)
     namespace: (qualified_name
-      (identifier)
-      (identifier)))
-  (newline)
+      qualifier: (identifier)
+      name: (identifier)))
   (using_directive
     keyword: (directive_keyword)
     alias: (identifier)
     namespace: (qualified_name
-      (identifier)
-      (identifier)
-      (identifier)))
-  (newline)
+      qualifier: (qualified_name
+        qualifier: (identifier)
+        name: (identifier))
+      name: (identifier)))
   (inject_directive
     keyword: (directive_keyword)
-    type: (type_name
-      (qualified_name
-        (identifier))
-      (generic_arguments
-        (type_name
-          (qualified_name
-            (identifier)))
-        (type_name
-          (qualified_name
-            (identifier))
-          (generic_arguments
-            (type_name
-              (qualified_name
-                (identifier))
-              (nullable_suffix))))))
+    type: (generic_name
+      (identifier)
+      (type_argument_list
+        (predefined_type)
+        (generic_name
+          (identifier)
+          (type_argument_list
+            (nullable_type
+              type: (predefined_type))))))
     identifier: (identifier))
-  (newline)
   (inherits_directive
     keyword: (directive_keyword)
-    type: (type_name
-      (qualified_name
-        (type_qualifier)
-        (identifier)
-        (identifier))
-      (array_suffix)))
-  (newline)
+    type: (array_type
+      type: (qualified_name
+        qualifier: (alias_qualified_name
+          alias: (identifier)
+          name: (identifier))
+        name: (identifier))
+      rank: (array_rank_specifier)))
   (implements_directive
     keyword: (directive_keyword)
-    type: (type_name
-      (qualified_name
-        (identifier))
-      (nullable_suffix)))
-  (newline)
+    type: (nullable_type
+      type: (identifier)))
   (inject_directive
     keyword: (directive_keyword)
-    type: (type_name
-      (qualified_name
-        (identifier)))
-    identifier: (MISSING identifier))
+    type: (identifier)
+    identifier: (identifier))
   (newline))
 
 ================================================================================
@@ -594,10 +606,15 @@ C# conditions in Razor control blocks
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (control_block
-    (control_condition)
-    (newline)
+    (if_keyword)
+    (control_condition
+      (binary_expression
+        (identifier)
+        (binary_expression
+          (identifier)
+          (integer_literal))))
     (newline)
     (html_element
       (html_tag_open
@@ -606,25 +623,27 @@ C# conditions in Razor control blocks
       (html_tag_close
         (html_tag_name)))
     (newline))
-  (newline)
   (control_block
-    (control_condition)
-    (newline)
+    (foreach_keyword)
+    (foreach_condition
+      (implicit_type)
+      (identifier)
+      (identifier))
     (newline)
     (html_element
       (html_tag_open
         (html_tag_name))
       (razor_implicit_expression
-        (csharp_implicit_expression
+        (member_access_expression
           (identifier)
           (identifier)))
       (html_tag_close
         (html_tag_name)))
     (newline))
-  (newline)
   (control_block
-    (control_condition)
-    (newline)
+    (switch_keyword)
+    (control_condition
+      (identifier))
     (newline)
     (html_element
       (html_tag_open
@@ -651,30 +670,33 @@ Control-flow blocks preserve following code
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (html_element
     open: (html_tag_open
       name: (html_tag_name))
-    (newline)
     (control_block
-      condition: (control_condition)
-      (newline)
+      keyword: (if_keyword)
+      condition: (control_condition
+        (boolean_literal))
       (newline)
       (html_element
         open: (html_tag_open
           name: (html_tag_name))
         (text)
         close: (html_tag_close
-          name: (html_tag_name)))
-      (newline))
+          name: (html_tag_name))))
     (newline)
     close: (html_tag_close
       name: (html_tag_name)))
-  (newline)
-  (newline)
   (code_block
     body: (csharp_code
-      (csharp_text)))
+      (local_declaration_statement
+        (modifier)
+        (variable_declaration
+          type: (predefined_type)
+          (variable_declarator
+            name: (identifier)
+            (integer_literal))))))
   (newline))
 
 ================================================================================
@@ -695,14 +717,16 @@ Multiline self-closing markup inside foreach
 
 --------------------------------------------------------------------------------
 
-(source_file
+(compilation_unit
   (html_element
     open: (html_tag_open
       name: (html_tag_name))
-    (newline)
     (control_block
-      condition: (control_condition)
-      (newline)
+      keyword: (foreach_keyword)
+      condition: (foreach_condition
+        type: (implicit_type)
+        left: (identifier)
+        right: (identifier))
       (newline)
       (component_element
         open: (component_self_closing_tag_open
@@ -712,21 +736,24 @@ Multiline self-closing markup inside foreach
             name: (component_parameter_name)
             value: (quoted_value
               (razor_implicit_expression
-                body: (csharp_implicit_expression
-                  name: (identifier)
-                  (identifier)))))
+                body: (member_access_expression
+                  expression: (identifier)
+                  name: (identifier)))))
           (newline)
           (component_parameter
             name: (component_parameter_name)
             value: (quoted_value
-              content: (quoted_value_content)))))
-      (newline))
+              content: (quoted_value_content))))))
     (newline)
     close: (html_tag_close
       name: (html_tag_name)))
-  (newline)
-  (newline)
   (code_block
     body: (csharp_code
-      (csharp_text)))
+      (local_declaration_statement
+        (modifier)
+        (variable_declaration
+          type: (predefined_type)
+          (variable_declarator
+            name: (identifier)
+            (integer_literal))))))
   (newline))
