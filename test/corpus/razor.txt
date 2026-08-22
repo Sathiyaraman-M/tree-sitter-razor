@@ -10,14 +10,143 @@ Self-closing markup preserves following code
 --------------------------------------------------------------------------------
 
 (source_file
-  (self_closing_markup_element
-    open: (self_closing_tag_open
-      name: (tag_name)))
+  (component_element
+    open: (component_self_closing_tag_open
+      name: (component_tag_name)))
   (newline)
   (newline)
   (code_block
     body: (csharp_code
       (csharp_text)))
+  (newline))
+
+
+
+================================================================================
+HTML and component classification
+================================================================================
+<div class="content">Hello</div>
+<MudButton Color="Primary">Save</MudButton>
+<InputText @bind-Value="name" />
+<my-widget data-value="custom" />
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (html_element
+    (html_tag_open
+      (html_tag_name)
+      (html_attribute
+        (html_attribute_name)
+        (quoted_value
+          (quoted_value_content))))
+    (text)
+    (html_tag_close
+      (html_tag_name)))
+  (newline)
+  (component_element
+    (component_tag_open
+      (component_tag_name)
+      (component_parameter
+        (component_parameter_name)
+        (quoted_value
+          (quoted_value_content))))
+    (text)
+    (component_tag_close
+      (component_tag_name)))
+  (newline)
+  (component_element
+    (component_self_closing_tag_open
+      (component_tag_name)
+      (razor_attribute
+        (razor_attribute_name)
+        (quoted_value
+          (quoted_value_content)))))
+  (newline)
+  (html_element
+    (html_self_closing_tag_open
+      (html_tag_name)
+      (html_attribute
+        (html_attribute_name)
+        (quoted_value
+          (quoted_value_content)))))
+  (newline))
+
+================================================================================
+Component nesting HTML and components
+================================================================================
+<LayoutView Layout="@layout">
+  <main class="content">
+    <PageTitle>Home</PageTitle>
+  </main>
+</LayoutView>
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (component_element
+    (component_tag_open
+      (component_tag_name)
+      (component_parameter
+        (component_parameter_name)
+        (quoted_value
+          (razor_implicit_expression
+            (csharp_implicit_expression
+              (identifier))))))
+    (newline)
+    (html_element
+      (html_tag_open
+        (html_tag_name)
+        (html_attribute
+          (html_attribute_name)
+          (quoted_value
+            (quoted_value_content))))
+      (newline)
+      (component_element
+        (component_tag_open
+          (component_tag_name))
+        (text)
+        (component_tag_close
+          (component_tag_name)))
+      (newline)
+      (html_tag_close
+        (html_tag_name)))
+    (newline)
+    (component_tag_close
+      (component_tag_name)))
+  (newline))
+
+================================================================================
+Component parameters and Razor attributes
+================================================================================
+<MyComponent Title="@(title)" Value="@value" @ref="component" @attributes="extra" />
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (component_element
+    (component_self_closing_tag_open
+      (component_tag_name)
+      (component_parameter
+        (component_parameter_name)
+        (quoted_value
+          (razor_explicit_expression
+            (csharp_expression
+              (csharp_expression_text)))))
+      (component_parameter
+        (component_parameter_name)
+        (quoted_value
+          (razor_implicit_expression
+            (csharp_implicit_expression
+              (identifier)))))
+      (razor_attribute
+        (razor_attribute_name)
+        (quoted_value
+          (quoted_value_content)))
+      (razor_attribute
+        (razor_attribute_name)
+        (quoted_value
+          (quoted_value_content)))))
   (newline))
 
 ================================================================================
@@ -34,29 +163,29 @@ Inline Razor code block
 --------------------------------------------------------------------------------
 
 (source_file
-  (markup_element
-    (tag_open
-      (tag_name)
-      (attribute
-        (attribute_name)
+  (component_element
+    (component_tag_open
+      (component_tag_name)
+      (component_parameter
+        (component_parameter_name)
         (quoted_value
           (razor_implicit_expression
             (csharp_implicit_expression
               (identifier))))))
     (newline)
-    (markup_element
-      (tag_open
-        (tag_name))
+    (component_element
+      (component_tag_open
+        (component_tag_name))
       (newline)
       (razor_code_block
         (csharp_code
           (csharp_text)))
       (newline)
-      (tag_close
-        (tag_name)))
+      (component_tag_close
+        (component_tag_name)))
     (newline)
-    (tag_close
-      (tag_name)))
+    (component_tag_close
+      (component_tag_name)))
   (newline))
 
 ================================================================================
@@ -79,21 +208,21 @@ Before @* <div>ignored</div>
   (text)
   (newline)
   (newline)
-  (markup_element
-    (tag_open
-      (tag_name))
+  (html_element
+    (html_tag_open
+      (html_tag_name))
     (newline)
     (razor_comment)
     (newline)
-    (markup_element
-      (tag_open
-        (tag_name))
+    (html_element
+      (html_tag_open
+        (html_tag_name))
       (text)
-      (tag_close
-        (tag_name)))
+      (html_tag_close
+        (html_tag_name)))
     (newline)
-    (tag_close
-      (tag_name)))
+    (html_tag_close
+      (html_tag_name)))
   (newline))
 
 ================================================================================
@@ -110,21 +239,21 @@ HTML comments
 (source_file
   (html_comment)
   (newline)
-  (markup_element
-    (tag_open
-      (tag_name))
+  (html_element
+    (html_tag_open
+      (html_tag_name))
     (newline)
     (html_comment)
     (newline)
-    (markup_element
-      (tag_open
-        (tag_name))
+    (html_element
+      (html_tag_open
+        (html_tag_name))
       (text)
-      (tag_close
-        (tag_name)))
+      (html_tag_close
+        (html_tag_name)))
     (newline)
-    (tag_close
-      (tag_name)))
+    (html_tag_close
+      (html_tag_name)))
   (newline))
 
 ================================================================================
@@ -154,26 +283,26 @@ Razor expressions inside attribute values
 --------------------------------------------------------------------------------
 
 (source_file
-  (markup_element
-    open: (tag_open
-      name: (tag_name)
-      (attribute
-        name: (attribute_name)
+  (component_element
+    open: (component_tag_open
+      name: (component_tag_name)
+      (component_parameter
+        name: (component_parameter_name)
         value: (quoted_value
           (razor_implicit_expression
             body: (csharp_implicit_expression
               name: (identifier)
               (identifier)))))
-      (attribute
-        name: (attribute_name)
+      (component_parameter
+        name: (component_parameter_name)
         value: (quoted_value
           content: (quoted_value_content)
           (razor_explicit_expression
             body: (csharp_expression
               (csharp_expression_text))))))
     (text)
-    close: (tag_close
-      name: (tag_name)))
+    close: (component_tag_close
+      name: (component_tag_name)))
   (newline))
 
 ================================================================================
@@ -184,11 +313,11 @@ Lambda inside an explicit Razor expression
 --------------------------------------------------------------------------------
 
 (source_file
-  (self_closing_markup_element
-    open: (self_closing_tag_open
-      name: (tag_name)
-      (attribute
-        name: (attribute_name)
+  (component_element
+    open: (component_self_closing_tag_open
+      name: (component_tag_name)
+      (component_parameter
+        name: (component_parameter_name)
         value: (quoted_value
           (razor_explicit_expression
             body: (csharp_expression
@@ -217,11 +346,11 @@ Implicit C# expressions in component parameters
 --------------------------------------------------------------------------------
 
 (source_file
-  (markup_element
-    (tag_open
-      (tag_name)
-      (attribute
-        (attribute_name)
+  (component_element
+    (component_tag_open
+      (component_tag_name)
+      (component_parameter
+        (component_parameter_name)
         (quoted_value
           (razor_implicit_expression
             (csharp_implicit_expression
@@ -231,25 +360,25 @@ Implicit C# expressions in component parameters
                   (csharp_expression_text)))
               (identifier))))))
     (newline)
-    (markup_element
-      (tag_open
-        (tag_name)
-        (attribute
-          (attribute_name)
+    (component_element
+      (component_tag_open
+        (component_tag_name)
+        (component_parameter
+          (component_parameter_name)
           (quoted_value
             (quoted_value_content))))
       (newline)
-      (self_closing_markup_element
-        (self_closing_tag_open
-          (tag_name)
-          (attribute
-            (attribute_name)
+      (component_element
+        (component_self_closing_tag_open
+          (component_tag_name)
+          (component_parameter
+            (component_parameter_name)
             (quoted_value
               (razor_implicit_expression
                 (csharp_implicit_expression
                   (identifier)))))
-          (attribute
-            (attribute_name)
+          (component_parameter
+            (component_parameter_name)
             (quoted_value
               (razor_implicit_expression
                 (csharp_implicit_expression
@@ -258,39 +387,39 @@ Implicit C# expressions in component parameters
                     (csharp_expression
                       (csharp_expression_text)))))))))
       (newline)
-      (self_closing_markup_element
-        (self_closing_tag_open
-          (tag_name)
-          (attribute
-            (attribute_name)
+      (component_element
+        (component_self_closing_tag_open
+          (component_tag_name)
+          (component_parameter
+            (component_parameter_name)
             (quoted_value
               (razor_implicit_expression
                 (csharp_implicit_expression
                   (identifier)))))
-          (attribute
-            (attribute_name)
+          (component_parameter
+            (component_parameter_name)
             (quoted_value
               (quoted_value_content)))))
       (newline)
-      (tag_close
-        (tag_name)))
+      (component_tag_close
+        (component_tag_name)))
     (newline)
-    (markup_element
-      (tag_open
-        (tag_name))
+    (component_element
+      (component_tag_open
+        (component_tag_name))
       (newline)
-      (markup_element
-        (tag_open
-          (tag_name))
+      (component_element
+        (component_tag_open
+          (component_tag_name))
         (text)
-        (tag_close
-          (tag_name)))
+        (component_tag_close
+          (component_tag_name)))
       (newline)
-      (markup_element
-        (tag_open
-          (tag_name)
-          (attribute
-            (attribute_name)
+      (component_element
+        (component_tag_open
+          (component_tag_name)
+          (component_parameter
+            (component_parameter_name)
             (quoted_value
               (razor_implicit_expression
                 (csharp_implicit_expression
@@ -299,25 +428,25 @@ Implicit C# expressions in component parameters
                     (csharp_expression
                       (csharp_expression_text))))))))
         (newline)
-        (markup_element
-          (tag_open
-            (tag_name)
-            (attribute
-              (attribute_name)
+        (html_element
+          (html_tag_open
+            (html_tag_name)
+            (html_attribute
+              (html_attribute_name)
               (quoted_value
                 (quoted_value_content))))
           (text)
-          (tag_close
-            (tag_name)))
+          (html_tag_close
+            (html_tag_name)))
         (newline)
-        (tag_close
-          (tag_name)))
+        (component_tag_close
+          (component_tag_name)))
       (newline)
-      (tag_close
-        (tag_name)))
+      (component_tag_close
+        (component_tag_name)))
     (newline)
-    (tag_close
-      (tag_name)))
+    (component_tag_close
+      (component_tag_name)))
   (newline))
 
 ================================================================================
@@ -470,39 +599,39 @@ C# conditions in Razor control blocks
     (control_condition)
     (newline)
     (newline)
-    (markup_element
-      (tag_open
-        (tag_name))
+    (html_element
+      (html_tag_open
+        (html_tag_name))
       (text)
-      (tag_close
-        (tag_name)))
+      (html_tag_close
+        (html_tag_name)))
     (newline))
   (newline)
   (control_block
     (control_condition)
     (newline)
     (newline)
-    (markup_element
-      (tag_open
-        (tag_name))
+    (html_element
+      (html_tag_open
+        (html_tag_name))
       (razor_implicit_expression
         (csharp_implicit_expression
           (identifier)
           (identifier)))
-      (tag_close
-        (tag_name)))
+      (html_tag_close
+        (html_tag_name)))
     (newline))
   (newline)
   (control_block
     (control_condition)
     (newline)
     (newline)
-    (markup_element
-      (tag_open
-        (tag_name))
+    (html_element
+      (html_tag_open
+        (html_tag_name))
       (text)
-      (tag_close
-        (tag_name)))
+      (html_tag_close
+        (html_tag_name)))
     (newline))
   (newline))
 
@@ -523,24 +652,24 @@ Control-flow blocks preserve following code
 --------------------------------------------------------------------------------
 
 (source_file
-  (markup_element
-    open: (tag_open
-      name: (tag_name))
+  (html_element
+    open: (html_tag_open
+      name: (html_tag_name))
     (newline)
     (control_block
       condition: (control_condition)
       (newline)
       (newline)
-      (markup_element
-        open: (tag_open
-          name: (tag_name))
+      (html_element
+        open: (html_tag_open
+          name: (html_tag_name))
         (text)
-        close: (tag_close
-          name: (tag_name)))
+        close: (html_tag_close
+          name: (html_tag_name)))
       (newline))
     (newline)
-    close: (tag_close
-      name: (tag_name)))
+    close: (html_tag_close
+      name: (html_tag_name)))
   (newline)
   (newline)
   (code_block
@@ -567,34 +696,34 @@ Multiline self-closing markup inside foreach
 --------------------------------------------------------------------------------
 
 (source_file
-  (markup_element
-    open: (tag_open
-      name: (tag_name))
+  (html_element
+    open: (html_tag_open
+      name: (html_tag_name))
     (newline)
     (control_block
       condition: (control_condition)
       (newline)
       (newline)
-      (self_closing_markup_element
-        open: (self_closing_tag_open
-          name: (tag_name)
+      (component_element
+        open: (component_self_closing_tag_open
+          name: (component_tag_name)
           (newline)
-          (attribute
-            name: (attribute_name)
+          (component_parameter
+            name: (component_parameter_name)
             value: (quoted_value
               (razor_implicit_expression
                 body: (csharp_implicit_expression
                   name: (identifier)
                   (identifier)))))
           (newline)
-          (attribute
-            name: (attribute_name)
+          (component_parameter
+            name: (component_parameter_name)
             value: (quoted_value
               content: (quoted_value_content)))))
       (newline))
     (newline)
-    close: (tag_close
-      name: (tag_name)))
+    close: (html_tag_close
+      name: (html_tag_name)))
   (newline)
   (newline)
   (code_block

@@ -28,8 +28,8 @@ export default grammar({
       $.code_block,
       $.razor_code_block,
       $.control_block,
-      $.self_closing_markup_element,
-      $.markup_element,
+      $.html_element,
+      $.component_element,
       $.razor_implicit_expression,
       $.razor_explicit_expression,
       $.text,
@@ -192,8 +192,8 @@ export default grammar({
         $.html_comment,
         $.control_block,
         $.razor_code_block,
-        $.self_closing_markup_element,
-        $.markup_element,
+        $.html_element,
+        $.component_element,
         $.razor_implicit_expression,
         $.razor_explicit_expression,
         $.control_text,
@@ -205,58 +205,110 @@ export default grammar({
 
     control_text: _ => token(prec(-1, /[^@<{}\n]+/)),
 
-    markup_element: $ => seq(
-      field("open", $.tag_open),
-      repeat(choice(
-        $.newline,
-        $.razor_comment,
-        $.html_comment,
-        $.control_block,
-        $.razor_code_block,
-        $.self_closing_markup_element,
-        $.markup_element,
-        $.razor_implicit_expression,
-        $.razor_explicit_expression,
-        $.text,
-      )),
-      field("close", $.tag_close),
+    html_element: $ => choice(
+      seq(
+        field("open", $.html_tag_open),
+        repeat($._markup_child),
+        field("close", $.html_tag_close),
+      ),
+      field("open", $.html_self_closing_tag_open),
     ),
 
-    self_closing_markup_element: $ => seq(
-      field("open", $.self_closing_tag_open),
+    component_element: $ => choice(
+      seq(
+        field("open", $.component_tag_open),
+        repeat($._markup_child),
+        field("close", $.component_tag_close),
+      ),
+      field("open", $.component_self_closing_tag_open),
     ),
 
-    tag_open: $ => seq(
+    _markup_child: $ => choice(
+      $.newline,
+      $.razor_comment,
+      $.html_comment,
+      $.control_block,
+      $.razor_code_block,
+      $.html_element,
+      $.component_element,
+      $.razor_implicit_expression,
+      $.razor_explicit_expression,
+      $.text,
+    ),
+
+    html_tag_open: $ => seq(
       "<",
-      field("name", $.tag_name),
-      repeat(choice($.attribute, $.newline)),
+      field("name", $.html_tag_name),
+      repeat(choice($.html_attribute, $.razor_attribute, $.newline)),
       ">",
     ),
 
-    self_closing_tag_open: $ => seq(
+    component_tag_open: $ => seq(
       "<",
-      field("name", $.tag_name),
-      repeat(choice($.attribute, $.newline)),
+      field("name", $.component_tag_name),
+      repeat(choice($.component_parameter, $.razor_attribute, $.newline)),
+      ">",
+    ),
+
+    html_self_closing_tag_open: $ => seq(
+      "<",
+      field("name", $.html_tag_name),
+      repeat(choice($.html_attribute, $.razor_attribute, $.newline)),
       "/>",
     ),
 
-    tag_close: $ => seq(
+    component_self_closing_tag_open: $ => seq(
+      "<",
+      field("name", $.component_tag_name),
+      repeat(choice($.component_parameter, $.razor_attribute, $.newline)),
+      "/>",
+    ),
+
+    html_tag_close: $ => seq(
       "</",
-      field("name", $.tag_name),
+      field("name", $.html_tag_name),
       ">",
     ),
 
-    tag_name: _ => /[A-Za-z][A-Za-z0-9_.:-]*/,
+    component_tag_close: $ => seq(
+      "</",
+      field("name", $.component_tag_name),
+      ">",
+    ),
 
-    attribute: $ => seq(
-      field("name", $.attribute_name),
+    html_tag_name: _ => /[a-z][A-Za-z0-9_.:-]*/,
+
+    component_tag_name: _ => /[A-Z][A-Za-z0-9_.:-]*/,
+
+    html_attribute: $ => seq(
+      field("name", $.html_attribute_name),
       optional(seq(
         "=",
         field("value", choice($.quoted_value, $.unquoted_value)),
       )),
     ),
 
-    attribute_name: _ => /@?[A-Za-z_:][A-Za-z0-9_.:@-]*/,
+    component_parameter: $ => seq(
+      field("name", $.component_parameter_name),
+      optional(seq(
+        "=",
+        field("value", choice($.quoted_value, $.unquoted_value)),
+      )),
+    ),
+
+    razor_attribute: $ => seq(
+      field("name", $.razor_attribute_name),
+      optional(seq(
+        "=",
+        field("value", choice($.quoted_value, $.unquoted_value)),
+      )),
+    ),
+
+    html_attribute_name: _ => /[A-Za-z_:][A-Za-z0-9_.:-]*/,
+
+    component_parameter_name: _ => /[A-Za-z_:][A-Za-z0-9_.:-]*/,
+
+    razor_attribute_name: _ => /@[A-Za-z_:][A-Za-z0-9_.:@-]*/,
 
     unquoted_value: _ => token(prec(1, /[^\s>"']+/)),
 

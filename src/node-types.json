@@ -5,36 +5,6 @@
     "fields": {}
   },
   {
-    "type": "attribute",
-    "named": true,
-    "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "attribute_name",
-            "named": true
-          }
-        ]
-      },
-      "value": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "quoted_value",
-            "named": true
-          },
-          {
-            "type": "unquoted_value",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
     "type": "attribute_directive",
     "named": true,
     "fields": {
@@ -79,6 +49,201 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "component_element",
+    "named": true,
+    "fields": {
+      "close": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "component_tag_close",
+            "named": true
+          }
+        ]
+      },
+      "open": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "component_self_closing_tag_open",
+            "named": true
+          },
+          {
+            "type": "component_tag_open",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "component_element",
+          "named": true
+        },
+        {
+          "type": "control_block",
+          "named": true
+        },
+        {
+          "type": "html_comment",
+          "named": true
+        },
+        {
+          "type": "html_element",
+          "named": true
+        },
+        {
+          "type": "newline",
+          "named": true
+        },
+        {
+          "type": "razor_code_block",
+          "named": true
+        },
+        {
+          "type": "razor_comment",
+          "named": true
+        },
+        {
+          "type": "razor_explicit_expression",
+          "named": true
+        },
+        {
+          "type": "razor_implicit_expression",
+          "named": true
+        },
+        {
+          "type": "text",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "component_parameter",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "component_parameter_name",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "quoted_value",
+            "named": true
+          },
+          {
+            "type": "unquoted_value",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "component_parameter_name",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "component_self_closing_tag_open",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "component_tag_name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "component_parameter",
+          "named": true
+        },
+        {
+          "type": "newline",
+          "named": true
+        },
+        {
+          "type": "razor_attribute",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "component_tag_close",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "component_tag_name",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "component_tag_open",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "component_tag_name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "component_parameter",
+          "named": true
+        },
+        {
+          "type": "newline",
+          "named": true
+        },
+        {
+          "type": "razor_attribute",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -127,6 +292,10 @@
       "required": false,
       "types": [
         {
+          "type": "component_element",
+          "named": true
+        },
+        {
           "type": "control_block",
           "named": true
         },
@@ -139,7 +308,7 @@
           "named": true
         },
         {
-          "type": "markup_element",
+          "type": "html_element",
           "named": true
         },
         {
@@ -160,10 +329,6 @@
         },
         {
           "type": "razor_implicit_expression",
-          "named": true
-        },
-        {
-          "type": "self_closing_markup_element",
           "named": true
         }
       ]
@@ -318,6 +483,201 @@
     }
   },
   {
+    "type": "html_attribute",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "html_attribute_name",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "quoted_value",
+            "named": true
+          },
+          {
+            "type": "unquoted_value",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "html_attribute_name",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "html_element",
+    "named": true,
+    "fields": {
+      "close": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "html_tag_close",
+            "named": true
+          }
+        ]
+      },
+      "open": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "html_self_closing_tag_open",
+            "named": true
+          },
+          {
+            "type": "html_tag_open",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "component_element",
+          "named": true
+        },
+        {
+          "type": "control_block",
+          "named": true
+        },
+        {
+          "type": "html_comment",
+          "named": true
+        },
+        {
+          "type": "html_element",
+          "named": true
+        },
+        {
+          "type": "newline",
+          "named": true
+        },
+        {
+          "type": "razor_code_block",
+          "named": true
+        },
+        {
+          "type": "razor_comment",
+          "named": true
+        },
+        {
+          "type": "razor_explicit_expression",
+          "named": true
+        },
+        {
+          "type": "razor_implicit_expression",
+          "named": true
+        },
+        {
+          "type": "text",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "html_self_closing_tag_open",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "html_tag_name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "html_attribute",
+          "named": true
+        },
+        {
+          "type": "newline",
+          "named": true
+        },
+        {
+          "type": "razor_attribute",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "html_tag_close",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "html_tag_name",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "html_tag_open",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "html_tag_name",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "html_attribute",
+          "named": true
+        },
+        {
+          "type": "newline",
+          "named": true
+        },
+        {
+          "type": "razor_attribute",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "implements_directive",
     "named": true,
     "fields": {
@@ -432,78 +792,6 @@
     }
   },
   {
-    "type": "markup_element",
-    "named": true,
-    "fields": {
-      "close": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "tag_close",
-            "named": true
-          }
-        ]
-      },
-      "open": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "tag_open",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "control_block",
-          "named": true
-        },
-        {
-          "type": "html_comment",
-          "named": true
-        },
-        {
-          "type": "markup_element",
-          "named": true
-        },
-        {
-          "type": "newline",
-          "named": true
-        },
-        {
-          "type": "razor_code_block",
-          "named": true
-        },
-        {
-          "type": "razor_comment",
-          "named": true
-        },
-        {
-          "type": "razor_explicit_expression",
-          "named": true
-        },
-        {
-          "type": "razor_implicit_expression",
-          "named": true
-        },
-        {
-          "type": "self_closing_markup_element",
-          "named": true
-        },
-        {
-          "type": "text",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "page_directive",
     "named": true,
     "fields": {
@@ -579,6 +867,36 @@
     }
   },
   {
+    "type": "razor_attribute",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "razor_attribute_name",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "quoted_value",
+            "named": true
+          },
+          {
+            "type": "unquoted_value",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "razor_code_block",
     "named": true,
     "fields": {
@@ -627,52 +945,6 @@
     }
   },
   {
-    "type": "self_closing_markup_element",
-    "named": true,
-    "fields": {
-      "open": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "self_closing_tag_open",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "self_closing_tag_open",
-    "named": true,
-    "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "tag_name",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "attribute",
-          "named": true
-        },
-        {
-          "type": "newline",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "source_file",
     "named": true,
     "root": true,
@@ -690,6 +962,10 @@
           "named": true
         },
         {
+          "type": "component_element",
+          "named": true
+        },
+        {
           "type": "control_block",
           "named": true
         },
@@ -699,6 +975,10 @@
         },
         {
           "type": "html_comment",
+          "named": true
+        },
+        {
+          "type": "html_element",
           "named": true
         },
         {
@@ -715,10 +995,6 @@
         },
         {
           "type": "layout_directive",
-          "named": true
-        },
-        {
-          "type": "markup_element",
           "named": true
         },
         {
@@ -746,61 +1022,11 @@
           "named": true
         },
         {
-          "type": "self_closing_markup_element",
-          "named": true
-        },
-        {
           "type": "text",
           "named": true
         },
         {
           "type": "using_directive",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "tag_close",
-    "named": true,
-    "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "tag_name",
-            "named": true
-          }
-        ]
-      }
-    }
-  },
-  {
-    "type": "tag_open",
-    "named": true,
-    "fields": {
-      "name": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "tag_name",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "attribute",
-          "named": true
-        },
-        {
-          "type": "newline",
           "named": true
         }
       ]
@@ -960,7 +1186,7 @@
     "named": false
   },
   {
-    "type": "attribute_name",
+    "type": "component_tag_name",
     "named": true
   },
   {
@@ -992,6 +1218,10 @@
     "named": true
   },
   {
+    "type": "html_tag_name",
+    "named": true
+  },
+  {
     "type": "identifier",
     "named": true
   },
@@ -1008,11 +1238,11 @@
     "named": true
   },
   {
-    "type": "razor_comment",
+    "type": "razor_attribute_name",
     "named": true
   },
   {
-    "type": "tag_name",
+    "type": "razor_comment",
     "named": true
   },
   {
